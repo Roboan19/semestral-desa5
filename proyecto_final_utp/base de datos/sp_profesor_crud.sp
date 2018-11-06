@@ -1,6 +1,7 @@
 DELIMITER
     //
 CREATE PROCEDURE sp_profesor_crud(
+IN operacion char(2),
     IN profeso_id INT,
     IN nombr VARCHAR(50),
     IN apellid VARCHAR(50),

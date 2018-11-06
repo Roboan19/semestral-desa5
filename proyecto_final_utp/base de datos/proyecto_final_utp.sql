@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 01-11-2018 a las 21:45:03
+-- Tiempo de generación: 06-11-2018 a las 21:35:00
 -- Versión del servidor: 10.1.34-MariaDB
 -- Versión de PHP: 7.2.8
 
@@ -26,6 +26,94 @@ DELIMITER $$
 --
 -- Procedimientos
 --
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_carrera_crud` (IN `carrer_id` INT, IN `secuencia` INT, IN `nombr` VARCHAR(255), IN `materi_id` INT, IN `nombre_materi` VARCHAR(255), IN `modo` INT)  BEGIN
+
+
+IF operacion = 'I' THEN
+ INSERT INTO carrera(carrera_id,secuencial,nombre,materia_id,nombre_materia)
+  VALUES(carrer_id,secuencia,nombr,materi_id,nombre_materi);
+END IF ;
+   
+IF operacion = 'U' THEN 
+   
+   if carrer_id != 0 then 
+      update carrera
+         set nombre         = nombr,
+             materia_id     = materi_id,
+             nombre_materia = nombre_materi
+       where carrera_id = carrer_id
+         and secuencial = secuencia;
+    end if;
+	
+end if;
+   
+IF operacion = 'D' THEN
+
+   if modo = 0 THEN
+      if carrer_id <> 0 and secuencia then 
+         delete from carrera  
+          where carrera_id = carrer_id
+            and secuencial = secuencia;
+      end if;
+   end if; 
+   
+   if modo = 1 THEN
+      if carrer_id != 0 then 
+         delete from carrera  
+          where carrera_id = carrer_id;
+      end if;
+   end if; 
+
+END IF ;
+   
+   
+IF operacion = 'Q' THEN
+ 
+      select * 
+        from carrera
+       where carrera_id = carrer_id;
+   
+END IF ;
+
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_catalogo_crud` (IN `valo` INT, IN `codig` VARCHAR(20), IN `descripcio` VARCHAR(255), IN `estad` CHAR(2))  BEGIN
+
+
+IF operacion = 'I' THEN
+ INSERT INTO catalogo(valor,codigo,descripcion,estado)
+ VALUES (valo,codig,descripcio,estad);
+END IF ;
+   
+IF operacion = 'U' THEN 
+   
+      update catalogo
+         set codigo      = codig,
+             descripcion = descripcio,
+             estado      = estad
+       where valor = valo;
+	
+end if; 
+   
+IF operacion = 'D' THEN
+
+      update catalogo
+         set estado = estad
+       where valor = valo;
+
+END IF ;
+   
+   
+IF operacion = 'Q' THEN
+ 
+      select * 
+        from catalogo
+       where carrera_id = carrer_id;
+   
+END IF ;
+
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_estudiante_crud` (IN `estudiant_id` INT, IN `nombr` VARCHAR(50), IN `apellid` VARCHAR(50), IN `nombre_complet` VARCHAR(100), IN `cedul` VARCHAR(20), IN `celula` VARCHAR(20), IN `corre` VARCHAR(100))  BEGIN
 
 
@@ -88,6 +176,109 @@ IF operacion = 'Q' THEN
    end if;
 
 END IF ; 
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_materia_crud` (IN `operacion` CHAR(2), IN `materi_id` INT, IN `secuencia` INT, IN `nombr` VARCHAR(255), IN `turn` CHAR(2), IN `horario_incia` VARCHAR(20), IN `horario_salid` VARCHAR(20), IN `modo` INT)  BEGIN
+
+
+IF operacion = 'I' THEN
+    insert into materia(materia_id,secuencial,nombre,turno,horario_incial,horario_salida)
+    values(materi_id,secuencia,nombr,turn,horario_incia,horario_salid);
+END IF ;
+   
+IF operacion = 'U' THEN 
+   
+   if carrer_id <> 0 then 
+       update materia
+          set nombre = nombr,
+              turno = turn,
+              horario_incial = horario_incia,
+              horario_salida = horario_salid
+        where materia_id = materi_id
+          and secuencial = secuencia;
+   end if;
+	
+end if;
+   
+IF operacion = 'D' THEN
+
+   if modo = 0 THEN
+      delete from materia
+       where materia_id = materi_id
+         and secuencial = secuencia;
+   end if; 
+   
+   if modo = 1 THEN
+      if carrer_id <> 0 then 
+         delete from materia
+          where materia_id = materi_id;
+      end if;
+   end if;
+
+END IF ;
+   
+   
+IF operacion = 'Q' THEN
+ 
+      select *
+        from materia;
+   
+END IF ;
+
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_matricula_crud` (IN `operacion` CHAR(2), IN `matricul_id` INT, IN `secuencia` INT, IN `estudiant_id` INT, IN `nombre_estudiant` VARCHAR(100), IN `carrer_id` INT, IN `nombre_carrer` VARCHAR(255), IN `materi_id` INT, IN `nombre_materi` VARCHAR(255), IN `prefoso_id` INT, IN `nombre_profeso` VARCHAR(100), IN `estad` CHAR(2), IN `modo` INT)  BEGIN
+
+IF operacion = 'I' THEN
+
+   insert into matricula(matricula_id,secuencial,estudiante_id,nombre_estudiante,carrera_id,nombre_carrera,materia_id,nombre_materia,prefosor_id,nombre_profesor,estado)
+   values(matricula_id,secuencial,estudiante_id,nombre_estudiante,carrera_id,nombre_carrera,materia_id,nombre_materia,prefosor_id,nombre_profesor,estado);
+
+END IF ;
+   
+IF operacion = 'U' THEN 
+   update matricula
+      set estudiante_id     =  estudiant_id,
+          nombre_estudiante =  nombre_estudiant,
+          carrera_id        =  carrer_id,
+          nombre_carrera    =  nombre_carrer,
+          materia_id        =  materi_id,
+          nombre_materia    =  nombre_materi,
+          prefosor_id       =  prefoso_id,
+          nombre_profesor   =  nombre_profeso,
+          estado            =  estad
+    where matricula_id =  matricul_id
+      and secuencial   =  secuencia;   
+end if;
+   
+IF operacion = 'D' THEN
+   
+   if modo = 0
+   then 
+   
+     delete from matricula
+      where matricula_id = matricul_id
+        and secuencial = secuencia;
+     
+   end if;
+   
+   if modo = 1
+   then 
+   
+     delete from matricula
+      where matricula_id = matricul_id;
+     
+   end if;
+
+END IF ;
+   
+   
+IF operacion = 'Q' THEN
+
+select * from matricula;
+
+END IF ;
+
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_profesor_crud` (IN `profeso_id` INT, IN `nombr` VARCHAR(50), IN `apellid` VARCHAR(50), IN `nombre_complet` VARCHAR(100), IN `cedul` VARCHAR(20), IN `celula` VARCHAR(20), IN `corre` VARCHAR(100))  BEGIN
@@ -221,6 +412,7 @@ CREATE TABLE `login` (
   `login_id` int(11) NOT NULL,
   `login` varchar(20) NOT NULL,
   `password` varchar(500) NOT NULL,
+  `rol` char(2) NOT NULL,
   `estado` char(2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 

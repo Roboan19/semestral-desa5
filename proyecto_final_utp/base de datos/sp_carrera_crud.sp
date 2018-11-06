@@ -1,11 +1,13 @@
 DELIMITER
     //
 CREATE PROCEDURE sp_carrera_crud(
+    IN operacion char(2),
     IN carrer_id INT,
     IN secuencia INT,
     IN nombr VARCHAR(255),
     IN materi_id INT,
-    IN nombre_materi VARCHAR(255)
+    IN nombre_materi VARCHAR(255),
+    IN modo INT
 )
 BEGIN
 
@@ -13,60 +15,47 @@ BEGIN
 IF operacion = 'I' THEN
  INSERT INTO carrera(carrera_id,secuencial,nombre,materia_id,nombre_materia)
   VALUES(carrer_id,secuencia,nombr,materi_id,nombre_materi);
-END IF ; 
+END IF ;
    
 IF operacion = 'U' THEN 
    
-   if profeso_id <> 0 then 
-          update profesor
-             set nombre           = nombr,
-                 apellido         = apellid,
-                 nombre_completo  = nombre_complet,
-                 cedula           = cedul,
-                 celular          = celula,
-                 correo           = corre
-           where profesor_id      = profeso_id;
-   end if;
-      
-   if cedul <> '' then 
-          update profesor
-             set nombre           = nombr,
-                 apellido         = apellid,
-                 nombre_completo  = nombre_complet,
-                 celular          = celula,
-                 correo           = corre
-           where cedula = cedul;
-   end if;
-END IF;
+   if carrer_id <> 0 then 
+      update carrera
+         set nombre         = nombr,
+             materia_id     = materi_id,
+             nombre_materia = nombre_materi
+       where carrera_id = carrer_id
+         and secuencial = secuencia;
+    end if;
+	
+end if;
    
 IF operacion = 'D' THEN
+
+   if modo = 0 THEN
+      if carrer_id <> 0 and secuencia then 
+         delete from carrera  
+          where carrera_id = carrer_id
+            and secuencial = secuencia;
+      end if; 
+   end if; 
    
-   if profeso_id <> 0 then 
-   delete from profesor 
-    where profesor_id = profeso_id;
+   if modo = 1 THEN
+      if carrer_id <> 0 then 
+         delete from carrera  
+          where carrera_id = carrer_id;
+      end if;
    end if;
-   
-   if cedul <> '' then 
-   delete from profesor 
-    where cedula = cedul;
-   end if;
-   
+
 END IF ;
    
    
 IF operacion = 'Q' THEN
  
-   if profeso_id <> 0 then 
       select * 
-        from profesor 
-       where profesor_id = profeso_id;
-   end if;
+        from carrera
+       where carrera_id = carrer_id;
    
-   if cedul <> '' then 
-      select * 
-        from profesor 
-       where cedula = cedul;
-   end if;
+END IF ;
 
-END IF ; 
 END //
